@@ -10,8 +10,6 @@ class NavDrawer extends StatelessWidget {
     final bool isDashboard = currentRoute == '/';
     final bool isCourses = currentRoute == '/courses';
     final bool isCalendar = currentRoute == '/calendar';
-    final bool isHelpSupport = currentRoute == '/help_support';
-    final bool isLinks = currentRoute == '/useful_links';
     final bool isAssessments = currentRoute == '/assessments';
 
     return Drawer(
@@ -68,20 +66,6 @@ class NavDrawer extends StatelessWidget {
             ),
             ListTile(
               title: const Text(
-                'My Modules and Courses',
-                style: TextStyle(color: moodleWhite, fontSize: 16),
-              ),
-              selected: isCourses,
-              selectedTileColor: Colors.white24,
-              onTap: () {
-                Navigator.pop(context);
-                if (!isCourses) {
-                  Navigator.pushReplacementNamed(context, '/courses');
-                }
-              },
-            ),
-            ListTile(
-              title: const Text(
                 'My Assessments',
                 style: TextStyle(color: moodleWhite, fontSize: 16),
               ),
@@ -91,34 +75,6 @@ class NavDrawer extends StatelessWidget {
                 Navigator.pop(context);
                 if (!isAssessments) {
                   Navigator.pushReplacementNamed(context, '/assessments');
-                }
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'Useful Links',
-                style: TextStyle(color: moodleWhite, fontSize: 16),
-              ),
-              selected: isLinks,
-              selectedTileColor: Colors.white24,
-              onTap: () {
-                Navigator.pop(context);
-                if (!isLinks) {
-                  Navigator.pushReplacementNamed(context, '/useful_links');
-                }
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'Help & Support',
-                style: TextStyle(color: moodleWhite, fontSize: 16),
-              ),
-              selected: isHelpSupport,
-              selectedTileColor: Colors.white24,
-              onTap: () {
-                Navigator.pop(context);
-                if (!isHelpSupport) {
-                  Navigator.pushReplacementNamed(context, '/help_support');
                 }
               },
             ),
