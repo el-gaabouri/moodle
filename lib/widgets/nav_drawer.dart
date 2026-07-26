@@ -9,6 +9,10 @@ class NavDrawer extends StatelessWidget {
     final currentRoute = ModalRoute.of(context)?.settings.name ?? '/';
     final bool isDashboard = currentRoute == '/';
     final bool isCourses = currentRoute == '/courses';
+    final bool isCalendar = currentRoute == '/calendar';
+    final bool isHelpSupport = currentRoute == '/help_support';
+    final bool isLinks = currentRoute == '/useful_links';
+    final bool isAssessments = currentRoute == '/assessments';
 
     return Drawer(
       backgroundColor: moodlePurple,
@@ -49,7 +53,6 @@ class NavDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.speed_outlined, color: moodleWhite),
               title: const Text(
                 'Dashboard',
                 style: TextStyle(color: moodleWhite, fontSize: 16),
@@ -64,18 +67,90 @@ class NavDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.calendar_month_outlined, color: moodleWhite),
+              title: const Text(
+                'My Modules and Courses',
+                style: TextStyle(color: moodleWhite, fontSize: 16),
+              ),
+              selected: isCourses,
+              selectedTileColor: Colors.white24,
+              onTap: () {
+                Navigator.pop(context);
+                if (!isCourses) {
+                  Navigator.pushReplacementNamed(context, '/courses');
+                }
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'My Assessments',
+                style: TextStyle(color: moodleWhite, fontSize: 16),
+              ),
+              selected: isAssessments,
+              selectedTileColor: Colors.white24,
+              onTap: () {
+                Navigator.pop(context);
+                if (!isAssessments) {
+                  Navigator.pushReplacementNamed(context, '/assessments');
+                }
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Useful Links',
+                style: TextStyle(color: moodleWhite, fontSize: 16),
+              ),
+              selected: isLinks,
+              selectedTileColor: Colors.white24,
+              onTap: () {
+                Navigator.pop(context);
+                if (!isLinks) {
+                  Navigator.pushReplacementNamed(context, '/useful_links');
+                }
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Help & Support',
+                style: TextStyle(color: moodleWhite, fontSize: 16),
+              ),
+              selected: isHelpSupport,
+              selectedTileColor: Colors.white24,
+              onTap: () {
+                Navigator.pop(context);
+                if (!isHelpSupport) {
+                  Navigator.pushReplacementNamed(context, '/help_support');
+                }
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Dashboard',
+                style: TextStyle(color: moodleWhite, fontSize: 16),
+              ),
+              selected: isDashboard,
+              selectedTileColor: Colors.white24,
+              onTap: () {
+                Navigator.pop(context);
+                if (!isDashboard) {
+                  Navigator.pushReplacementNamed(context, '/');
+                }
+              },
+            ),
+            ListTile(
               title: const Text(
                 'Calendar',
                 style: TextStyle(color: moodleWhite, fontSize: 16),
               ),
+              selected: isCalendar,
+              selectedTileColor: Colors.white24,
               onTap: () {
-                // placeholder
+                Navigator.pop(context);
+                if (!isCalendar) {
+                  Navigator.pushReplacementNamed(context, '/calendar');
+                }
               },
             ),
-
             ListTile(
-              leading: const Icon(Icons.school_outlined, color: moodleWhite),
               title: const Text(
                 'My courses',
                 style: TextStyle(color: moodleWhite, fontSize: 16),

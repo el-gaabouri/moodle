@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 import 'package:moodle/constants.dart';
 
-class CoursesView extends StatelessWidget {
-  const CoursesView({Key? key}) : super(key: key);
+class AssessmentsView extends StatelessWidget {
+  const AssessmentsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class CoursesView extends StatelessWidget {
                 ),
               ),
               const Text(
-                'My courses',
+                'My Assessments',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ],
@@ -68,7 +68,7 @@ class CoursesView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'My courses',
+                'My Assessments',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class CoursesView extends StatelessWidget {
               ),
               SizedBox(height: 24),
               Text(
-                'This is the courses overview page.',
+                'This is the assessments page.',
                 style: TextStyle(fontSize: 16, color: moodleTextDark),
               ),
             ],
