@@ -230,7 +230,42 @@ class ProfileView extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
+                      'M34704-2026/27-SMYEAR, M24739-2025/26-SMYEAR M34704 Engineering Project / M34703 Study Project (2026/27)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M30233-2025/26-SMSEP Operating Systems and Internetworking (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M30819-2025/26-SMYEAR Software Engineering Theory and Practice (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
                       'M30235-2025/26-SMYEAR Programming Applications and Programming Languages (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M22732-2025/26-SMYEAR COMP TUTORIAL LEVEL 5 (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M21270-2025/26-SMSEP Data Structures and Algorithms (DSALG) (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M33122-2025/26-SMJAN Security And Cryptography (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M21274-2025/26-SMJAN Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
                       style: TextStyle(fontSize: 16, color: moodleTextDark),
                     ),
                   ],
