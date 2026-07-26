@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 import 'package:moodle/constants.dart';
 
@@ -47,26 +48,7 @@ class ProfileView extends StatelessWidget {
             onPressed: () {},
           ),
           const SizedBox(width: 8),
-          TextButton(
-            style: TextButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(36, 36),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile');
-            },
-            child: const CircleAvatar(
-              radius: 18,
-              backgroundColor: moodleGrayBg,
-              foregroundColor: moodlePurple,
-              child: Text(
-                'AE',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-              ),
-            ),
-          ),
+          const AccountMenuButton(),
           const SizedBox(width: 16),
         ],
       ),
