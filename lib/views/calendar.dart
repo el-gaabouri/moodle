@@ -106,7 +106,7 @@ class CalendarView extends StatelessWidget {
 }
 
 class CalendarCard extends StatefulWidget {
-  const CalendarCard();
+  const CalendarCard({Key? key}) : super(key: key);
 
   @override
   State<CalendarCard> createState() => CalendarCardState();
@@ -115,6 +115,7 @@ class CalendarCard extends StatefulWidget {
 class CalendarCardState extends State<CalendarCard> {
   late final DateTime today;
   late DateTime visibleMonth;
+  DateTime? selectedDate;
 
   static const List<String> weekdayLabels = [
     'Mon',
@@ -149,6 +150,32 @@ class CalendarCardState extends State<CalendarCard> {
     setState(() {
       visibleMonth = DateTime(today.year, today.month);
     });
+  }
+
+  void selectDay(int day) {
+    final DateTime date = DateTime(visibleMonth.year, visibleMonth.month, day);
+
+    setState(() {
+      selectedDate = date;
+    });
+
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Selected day'),
+          content: Text('${monthName(date.month)} ${date.day}, ${date.year}'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -252,11 +279,21 @@ class CalendarCardState extends State<CalendarCard> {
                   return const SizedBox.shrink();
                 }
 
+                final bool isToday = day == today.day &&
+                    visibleMonth.month == today.month &&
+                    visibleMonth.year == today.year;
+                final bool isSelected = selectedDate != null &&
+                    day == selectedDate!.day &&
+                    visibleMonth.month == selectedDate!.month &&
+                    visibleMonth.year == selectedDate!.year;
+
                 return CalendarDayCell(
                   day: day,
-                  isToday: day == today.day &&
-                      visibleMonth.month == today.month &&
-                      visibleMonth.year == today.year,
+                  isToday: isToday,
+                  isSelected: isSelected,
+                  onTap: () {
+                    selectDay(day);
+                  },
                 );
               },
             );
@@ -300,30 +337,54 @@ class CalendarCardState extends State<CalendarCard> {
 
 class CalendarDayCell extends StatelessWidget {
   const CalendarDayCell({
+    Key? key,
     required this.day,
     required this.isToday,
-  });
+    required this.isSelected,
+    required this.onTap,
+  }) : super(key: key);
 
   final int day;
   final bool isToday;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isToday ? moodlePurple : moodleSurface,
-        border: Border.all(
-          color: isToday ? moodlePurple : moodleBorder,
-        ),
+    final Color backgroundColor = isSelected
+        ? moodlePurple
+        : isToday
+            ? moodleGrayBg
+            : moodleSurface;
+    final Color borderColor =
+        isSelected || isToday ? moodlePurple : moodleBorder;
+    final Color textColor = isSelected
+        ? moodleWhite
+        : isToday
+            ? moodlePurple
+            : moodleTextDark;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        '$day',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-          color: isToday ? moodleWhite : moodleTextDark,
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            '$day',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight:
+                  isSelected || isToday ? FontWeight.bold : FontWeight.normal,
+              color: textColor,
+            ),
+          ),
         ),
       ),
     );
