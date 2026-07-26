@@ -71,28 +71,35 @@ class ProfileView extends StatelessWidget {
         ],
       ),
       drawer: const NavDrawer(),
-      body: Container(
-        color: moodleBg,
-        child: const SingleChildScrollView(
-          padding: EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'My profile',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: moodlePurple,
-                ),
+      backgroundColor: moodleBg,
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 48,
+              backgroundColor: moodleGrayBg,
+              foregroundColor: moodlePurple,
+              child: Text(
+                'AE',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
               ),
-              SizedBox(height: 24),
-              Text(
-                'This is the profile page.',
-                style: TextStyle(fontSize: 16, color: moodleTextDark),
+            ),
+            Text(
+              'Anass El Gaabouri',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: moodlePurple,
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 24),
+            Text(
+              'This is the profile page.',
+              style: TextStyle(fontSize: 16, color: moodleTextDark),
+            ),
+          ],
         ),
       ),
     );
