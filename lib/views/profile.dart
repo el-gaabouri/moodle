@@ -75,29 +75,167 @@ class ProfileView extends StatelessWidget {
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CircleAvatar(
-              radius: 48,
-              backgroundColor: moodleGrayBg,
-              foregroundColor: moodlePurple,
-              child: Text(
-                'AE',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
-              ),
-            ),
-            Text(
-              'Anass El Gaabouri',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: moodlePurple,
-              ),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 48,
+                  backgroundColor: moodleGrayBg,
+                  foregroundColor: moodlePurple,
+                  child: Text(
+                    'AE',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    'Anass El Gaabouri',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: moodlePurple,
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 24),
-            Text(
-              'This is the profile page.',
-              style: TextStyle(fontSize: 16, color: moodleTextDark),
+            Card(
+              color: moodleWhite,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: moodleBorder),
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'User details',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: moodlePurple,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Divider(height: 1, thickness: 1, color: moodleBorder),
+                    SizedBox(height: 20),
+                    Text(
+                      'Email address',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Anass.ElGaabouri@myport.ac.uk',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Student ID',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '2268566',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Course',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'BSC (HONS) COMPUTER SCIENCE',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Route',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Computer Science',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Faculty',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Faculty of Technology',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Timezone',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Europe/London',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Course details',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: moodlePurple,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Divider(height: 1, thickness: 1, color: moodleBorder),
+                    SizedBox(height: 20),
+                    Text(
+                      'Course profiles',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'M30235-2025/26-SMYEAR Programming Applications and Programming Languages (2025/26)',
+                      style: TextStyle(fontSize: 16, color: moodleTextDark),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
