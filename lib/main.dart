@@ -27,7 +27,7 @@ class MoodleApp extends StatelessWidget {
           surface: moodleSurface,
         ),
       ),
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
         '/': (context) => const DashboardView(),
         '/courses': (context) => const CoursesView(),
