@@ -13,44 +13,59 @@ class LoginView extends StatelessWidget {
           padding: const EdgeInsets.all(24.0),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
-            child: Card(
-              color: moodleWhite,
-              elevation: 0,
-              shape: const RoundedRectangleBorder(
-                side: BorderSide(color: moodleBorder),
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Login',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: moodlePurple,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'This is login page to moodle',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: moodleTextDark),
-                    ),
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/');
-                      },
-                      child: const Text('Login'),
-                    ),
-                  ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Image.asset(
+                  'images/logo_uni.png',
+                  height: 96,
+                  fit: BoxFit.contain,
                 ),
-              ),
+                const SizedBox(height: 24),
+                Card(
+                  color: moodleWhite,
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(
+                    side: BorderSide(color: moodleBorder),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text(
+                          'Login',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: moodlePurple,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'This is login page to moodle',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: moodleTextDark,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        FilledButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
+                          child: const Text('Login'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
