@@ -268,11 +268,19 @@ class _CourseCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                course.department,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 14, color: moodleTextMuted),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    course.department,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: moodleTextMuted,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
