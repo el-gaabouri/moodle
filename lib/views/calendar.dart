@@ -505,6 +505,11 @@ class _CalendarDayCell extends StatelessWidget {
         : isToday
             ? moodlePurple
             : moodleTextDark;
+    final TextStyle dayTextStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
+      color: textColor,
+    );
 
     return Material(
       color: Colors.transparent,
@@ -518,51 +523,54 @@ class _CalendarDayCell extends StatelessWidget {
             border: Border.all(color: borderColor),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '$day',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: isSelected || isToday
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: textColor,
-                ),
-              ),
-              if (assessments.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                if (showAssessmentLabels)
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final _CalendarAssessment assessment
-                            in assessments.take(2))
-                          _CalendarAssessmentChip(
-                            assessment: assessment,
-                            selected: isSelected,
-                          ),
-                        if (assessments.length > 2)
-                          Text(
-                            '+${assessments.length - 2} more',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: isSelected ? moodleWhite : moodleTextMuted,
-                            ),
-                          ),
-                      ],
+          child: !showAssessmentLabels && assessments.isNotEmpty
+              ? Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text('$day', style: dayTextStyle),
                     ),
-                  )
-                else
-                  _CalendarAssessmentDots(
-                    count: assessments.length,
-                    selected: isSelected,
-                  ),
-              ],
-            ],
-          ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: _CalendarAssessmentDots(
+                        count: assessments.length,
+                        selected: isSelected,
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('$day', style: dayTextStyle),
+                    if (assessments.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final _CalendarAssessment assessment
+                                in assessments.take(2))
+                              _CalendarAssessmentChip(
+                                assessment: assessment,
+                                selected: isSelected,
+                              ),
+                            if (assessments.length > 2)
+                              Text(
+                                '+${assessments.length - 2} more',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: isSelected
+                                      ? moodleWhite
+                                      : moodleTextMuted,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
         ),
       ),
     );
