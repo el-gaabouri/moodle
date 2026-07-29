@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moodle/models/assessment.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
@@ -9,6 +10,13 @@ class AssessmentsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Assessment> upcomingAssessments = assessmentsForSection(
+      AssessmentSection.upcoming,
+    );
+    final List<Assessment> pastAssessments = assessmentsForSection(
+      AssessmentSection.past,
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: moodleWhite,
@@ -52,12 +60,12 @@ class AssessmentsView extends StatelessWidget {
       ),
       drawer: const NavDrawer(),
       backgroundColor: moodleBg,
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(24.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
+            const Text(
               'My Assessments',
               style: TextStyle(
                 fontSize: 28,
@@ -65,68 +73,17 @@ class AssessmentsView extends StatelessWidget {
                 color: moodlePurple,
               ),
             ),
-            SizedBox(height: 24),
-            Text(
-              'Upcoming assessments',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: moodlePurple,
-              ),
+            const SizedBox(height: 24),
+            _AssessmentSection(
+              title: 'Upcoming assessments',
+              assessments: upcomingAssessments,
             ),
-            SizedBox(height: 12),
-            _AssessmentCard(
-              title:
-                  'Item 1 (Flutter) - Referral and Deferral Coursework. Deadline: 29/07/2026 13:00pm (with the 48 hour extension: 31/07/2026 13:00pm)',
-              dueDate: '29 July 2026',
-              moduleName:
-                  'M30235 - Programming Applications and Programming Languages (2025/26)',
-              status: 'Not yet submitted',
-              statusColor: moodlePurple,
-              statusBackgroundColor: Color(0xFFF3EAF4),
+            const SizedBox(height: 24),
+            _AssessmentSection(
+              title: 'Past assessments',
+              assessments: pastAssessments,
             ),
-            SizedBox(height: 12),
-            _AssessmentCard(
-              title:
-                  'Ref/Def - Item 2 M30235 - Computer Based Exam (30 July 2026, 10:00 AM)',
-              dueDate: '30 July 2026',
-              moduleName:
-                  'M30235 - Programming Applications and Programming Languages (2025/26)',
-              status: 'Not available',
-              statusColor: moodleTextMuted,
-              statusBackgroundColor: moodleGrayBg,
-            ),
-            SizedBox(height: 24),
-            Text(
-              'Past assessments',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: moodlePurple,
-              ),
-            ),
-            SizedBox(height: 12),
-            _AssessmentCard(
-              title: 'Referral/Deferral Functional Programming Assessment',
-              dueDate: '10 July 2026',
-              moduleName:
-                  'M21274-2025/26-SMJAN: Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
-              status: 'Overdue',
-              statusColor: Color(0xFFB42318),
-              statusBackgroundColor: Color(0xFFFDECEC),
-            ),
-            SizedBox(height: 12),
-            _AssessmentCard(
-              title:
-                  'Item 2 - Coursework - EC/late (Due Date: 28.5.2026 13:00pm)',
-              dueDate: '26 June 2026',
-              moduleName:
-                  'M30819-2025/26-SMYEAR: Software Engineering Theory and Practice (2025/26)',
-              status: 'Submitted',
-              statusColor: Color(0xFF067647),
-              statusBackgroundColor: Color(0xFFE7F6EC),
-            ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -134,22 +91,44 @@ class AssessmentsView extends StatelessWidget {
   }
 }
 
-class _AssessmentCard extends StatelessWidget {
-  const _AssessmentCard({
+class _AssessmentSection extends StatelessWidget {
+  const _AssessmentSection({
     required this.title,
-    required this.dueDate,
-    required this.moduleName,
-    required this.status,
-    required this.statusColor,
-    required this.statusBackgroundColor,
+    required this.assessments,
   });
 
   final String title;
-  final String dueDate;
-  final String status;
-  final String moduleName;
-  final Color statusColor;
-  final Color statusBackgroundColor;
+  final List<Assessment> assessments;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: moodlePurple,
+          ),
+        ),
+        const SizedBox(height: 12),
+        for (int index = 0; index < assessments.length; index++) ...[
+          _AssessmentCard(assessment: assessments[index]),
+          if (index < assessments.length - 1) const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+}
+
+class _AssessmentCard extends StatelessWidget {
+  const _AssessmentCard({
+    required this.assessment,
+  });
+
+  final Assessment assessment;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +149,7 @@ class _AssessmentCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    title,
+                    assessment.title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -180,20 +159,18 @@ class _AssessmentCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 _StatusBadge(
-                  label: status,
-                  textColor: statusColor,
-                  backgroundColor: statusBackgroundColor,
+                  status: assessment.status,
                 ),
               ],
             ),
             const SizedBox(height: 12),
             Text(
-              moduleName,
+              assessment.moduleName,
               style: const TextStyle(fontSize: 14, color: moodleTextMuted),
             ),
             const SizedBox(height: 8),
             Text(
-              'Due date: $dueDate',
+              'Due date: ${formatAssessmentDate(assessment.dueDate)}',
               style: const TextStyle(fontSize: 14, color: moodleTextMuted),
             ),
             const SizedBox(height: 16),
@@ -213,31 +190,55 @@ class _AssessmentCard extends StatelessWidget {
 
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge({
-    required this.label,
-    required this.textColor,
-    required this.backgroundColor,
+    required this.status,
   });
 
-  final String label;
-  final Color textColor;
-  final Color backgroundColor;
+  final AssessmentStatus status;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: status.backgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        label,
+        status.label,
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
-          color: textColor,
+          color: status.textColor,
         ),
       ),
     );
+  }
+}
+
+extension _AssessmentStatusColors on AssessmentStatus {
+  Color get textColor {
+    switch (this) {
+      case AssessmentStatus.notYetSubmitted:
+        return moodlePurple;
+      case AssessmentStatus.notAvailable:
+        return moodleTextMuted;
+      case AssessmentStatus.overdue:
+        return const Color(0xFFB42318);
+      case AssessmentStatus.submitted:
+        return const Color(0xFF067647);
+    }
+  }
+
+  Color get backgroundColor {
+    switch (this) {
+      case AssessmentStatus.notYetSubmitted:
+        return const Color(0xFFF3EAF4);
+      case AssessmentStatus.notAvailable:
+        return moodleGrayBg;
+      case AssessmentStatus.overdue:
+        return const Color(0xFFFDECEC);
+      case AssessmentStatus.submitted:
+        return const Color(0xFFE7F6EC);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moodle/models/assessment.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
@@ -97,47 +98,6 @@ class _CalendarCardState extends State<CalendarCard> {
   late DateTime visibleMonth;
   DateTime? selectedDate;
 
-  static final List<_CalendarAssessment> assessments = [
-    _CalendarAssessment(
-      title:
-          'Item 1 (Flutter) - Referral and Deferral Coursework. Deadline: 29/07/2026 13:00pm (with the 48 hour extension: 31/07/2026 13:00pm)',
-      moduleName:
-          'M30235 - Programming Applications and Programming Languages (2025/26)',
-      status: 'Not yet submitted',
-      date: DateTime(2026, 7, 29),
-      statusColor: moodlePurple,
-      statusBackgroundColor: const Color(0xFFF3EAF4),
-    ),
-    _CalendarAssessment(
-      title:
-          'Ref/Def - Item 2 M30235 - Computer Based Exam (30 July 2026, 10:00 AM)',
-      moduleName:
-          'M30235 - Programming Applications and Programming Languages (2025/26)',
-      status: 'Not available',
-      date: DateTime(2026, 7, 30),
-      statusColor: moodleTextMuted,
-      statusBackgroundColor: moodleGrayBg,
-    ),
-    _CalendarAssessment(
-      title: 'Referral/Deferral Functional Programming Assessment',
-      moduleName:
-          'M21274-2025/26-SMJAN: Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
-      status: 'Overdue',
-      date: DateTime(2026, 7, 10),
-      statusColor: const Color(0xFFB42318),
-      statusBackgroundColor: const Color(0xFFFDECEC),
-    ),
-    _CalendarAssessment(
-      title: 'Item 2 - Coursework - EC/late (Due Date: 28.5.2026 13:00pm)',
-      moduleName:
-          'M30819-2025/26-SMYEAR: Software Engineering Theory and Practice (2025/26)',
-      status: 'Submitted',
-      date: DateTime(2026, 6, 26),
-      statusColor: const Color(0xFF067647),
-      statusBackgroundColor: const Color(0xFFE7F6EC),
-    ),
-  ];
-
   static const List<String> weekdayLabels = [
     'Mon',
     'Tue',
@@ -175,7 +135,7 @@ class _CalendarCardState extends State<CalendarCard> {
 
   void selectDay(int day) {
     final DateTime date = DateTime(visibleMonth.year, visibleMonth.month, day);
-    final List<_CalendarAssessment> dayAssessments = assessmentsForDate(date);
+    final List<Assessment> dayAssessments = assessmentsForDate(date);
 
     setState(() {
       selectedDate = date;
@@ -200,14 +160,6 @@ class _CalendarCardState extends State<CalendarCard> {
         );
       },
     );
-  }
-
-  List<_CalendarAssessment> assessmentsForDate(DateTime date) {
-    return assessments.where((assessment) {
-      return assessment.date.year == date.year &&
-          assessment.date.month == date.month &&
-          assessment.date.day == date.day;
-    }).toList();
   }
 
   @override
@@ -320,8 +272,7 @@ class _CalendarCardState extends State<CalendarCard> {
                     day == selectedDate!.day &&
                     visibleMonth.month == selectedDate!.month &&
                     visibleMonth.year == selectedDate!.year;
-                final List<_CalendarAssessment> dayAssessments =
-                    assessmentsForDate(
+                final List<Assessment> dayAssessments = assessmentsForDate(
                   DateTime(visibleMonth.year, visibleMonth.month, day),
                 );
 
@@ -375,30 +326,12 @@ class _CalendarCardState extends State<CalendarCard> {
   }
 }
 
-class _CalendarAssessment {
-  const _CalendarAssessment({
-    required this.title,
-    required this.moduleName,
-    required this.status,
-    required this.date,
-    required this.statusColor,
-    required this.statusBackgroundColor,
-  });
-
-  final String title;
-  final String moduleName;
-  final String status;
-  final DateTime date;
-  final Color statusColor;
-  final Color statusBackgroundColor;
-}
-
 class _CalendarDayDialogContent extends StatelessWidget {
   const _CalendarDayDialogContent({
     required this.assessments,
   });
 
-  final List<_CalendarAssessment> assessments;
+  final List<Assessment> assessments;
 
   @override
   Widget build(BuildContext context) {
@@ -434,7 +367,7 @@ class _CalendarAssessmentSummary extends StatelessWidget {
     required this.assessment,
   });
 
-  final _CalendarAssessment assessment;
+  final Assessment assessment;
 
   @override
   Widget build(BuildContext context) {
@@ -463,9 +396,7 @@ class _CalendarAssessmentSummary extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _CalendarStatusBadge(
-            label: assessment.status,
-            textColor: assessment.statusColor,
-            backgroundColor: assessment.statusBackgroundColor,
+            status: assessment.status,
           ),
         ],
       ),
@@ -487,7 +418,7 @@ class _CalendarDayCell extends StatelessWidget {
   final int day;
   final bool isToday;
   final bool isSelected;
-  final List<_CalendarAssessment> assessments;
+  final List<Assessment> assessments;
   final bool showAssessmentLabels;
   final VoidCallback onTap;
 
@@ -549,7 +480,7 @@ class _CalendarDayCell extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            for (final _CalendarAssessment assessment
+                            for (final Assessment assessment
                                 in assessments.take(2))
                               _CalendarAssessmentChip(
                                 assessment: assessment,
@@ -612,7 +543,7 @@ class _CalendarAssessmentChip extends StatelessWidget {
     required this.selected,
   });
 
-  final _CalendarAssessment assessment;
+  final Assessment assessment;
   final bool selected;
 
   @override
@@ -624,7 +555,7 @@ class _CalendarAssessmentChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: selected
             ? const Color(0x2EFFFFFF)
-            : assessment.statusBackgroundColor,
+            : assessment.status.backgroundColor,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
@@ -634,7 +565,7 @@ class _CalendarAssessmentChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: selected ? moodleWhite : assessment.statusColor,
+          color: selected ? moodleWhite : assessment.status.textColor,
         ),
       ),
     );
@@ -643,31 +574,55 @@ class _CalendarAssessmentChip extends StatelessWidget {
 
 class _CalendarStatusBadge extends StatelessWidget {
   const _CalendarStatusBadge({
-    required this.label,
-    required this.textColor,
-    required this.backgroundColor,
+    required this.status,
   });
 
-  final String label;
-  final Color textColor;
-  final Color backgroundColor;
+  final AssessmentStatus status;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: status.backgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        label,
+        status.label,
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
-          color: textColor,
+          color: status.textColor,
         ),
       ),
     );
+  }
+}
+
+extension _AssessmentStatusColors on AssessmentStatus {
+  Color get textColor {
+    switch (this) {
+      case AssessmentStatus.notYetSubmitted:
+        return moodlePurple;
+      case AssessmentStatus.notAvailable:
+        return moodleTextMuted;
+      case AssessmentStatus.overdue:
+        return const Color(0xFFB42318);
+      case AssessmentStatus.submitted:
+        return const Color(0xFF067647);
+    }
+  }
+
+  Color get backgroundColor {
+    switch (this) {
+      case AssessmentStatus.notYetSubmitted:
+        return const Color(0xFFF3EAF4);
+      case AssessmentStatus.notAvailable:
+        return moodleGrayBg;
+      case AssessmentStatus.overdue:
+        return const Color(0xFFFDECEC);
+      case AssessmentStatus.submitted:
+        return const Color(0xFFE7F6EC);
+    }
   }
 }
