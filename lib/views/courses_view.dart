@@ -290,7 +290,6 @@ class _CourseDetailsViewState extends State<_CourseDetailsView> {
                 'Course details',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              SizedBox(width: 24),
               AppBarNavLinks(),
             ],
           ),
