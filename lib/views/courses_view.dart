@@ -62,11 +62,6 @@ class CoursesView extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              const Text(
-                'My courses',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(width: 24),
               const AppBarNavLinks(),
             ],
           ),

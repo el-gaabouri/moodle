@@ -29,11 +29,6 @@ class DashboardView extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              const Text(
-                'Dashboard',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(width: 24),
               const AppBarNavLinks(),
             ],
           ),

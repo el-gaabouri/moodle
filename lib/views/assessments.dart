@@ -28,11 +28,6 @@ class AssessmentsView extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              const Text(
-                'My Assessments',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(width: 24),
               const AppBarNavLinks(),
             ],
           ),
