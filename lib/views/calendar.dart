@@ -294,6 +294,8 @@ class _CalendarCardState extends State<CalendarCard> {
         const SizedBox(height: 8),
         LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
+            final bool showAssessmentLabels = constraints.maxWidth >= 520;
+
             return GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -328,6 +330,7 @@ class _CalendarCardState extends State<CalendarCard> {
                   isToday: isToday,
                   isSelected: isSelected,
                   assessments: dayAssessments,
+                  showAssessmentLabels: showAssessmentLabels,
                   onTap: () {
                     selectDay(day);
                   },
@@ -477,6 +480,7 @@ class _CalendarDayCell extends StatelessWidget {
     required this.isToday,
     required this.isSelected,
     required this.assessments,
+    required this.showAssessmentLabels,
     required this.onTap,
   }) : super(key: key);
 
@@ -484,6 +488,7 @@ class _CalendarDayCell extends StatelessWidget {
   final bool isToday;
   final bool isSelected;
   final List<_CalendarAssessment> assessments;
+  final bool showAssessmentLabels;
   final VoidCallback onTap;
 
   @override
@@ -528,29 +533,64 @@ class _CalendarDayCell extends StatelessWidget {
               ),
               if (assessments.isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (final _CalendarAssessment assessment
-                          in assessments.take(2))
-                        _CalendarAssessmentChip(
-                          assessment: assessment,
-                          selected: isSelected,
-                        ),
-                      if (assessments.length > 2)
-                        Text(
-                          '+${assessments.length - 2} more',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: isSelected ? moodleWhite : moodleTextMuted,
+                if (showAssessmentLabels)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final _CalendarAssessment assessment
+                            in assessments.take(2))
+                          _CalendarAssessmentChip(
+                            assessment: assessment,
+                            selected: isSelected,
                           ),
-                        ),
-                    ],
+                        if (assessments.length > 2)
+                          Text(
+                            '+${assessments.length - 2} more',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: isSelected ? moodleWhite : moodleTextMuted,
+                            ),
+                          ),
+                      ],
+                    ),
+                  )
+                else
+                  _CalendarAssessmentDots(
+                    count: assessments.length,
+                    selected: isSelected,
                   ),
-                ),
               ],
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarAssessmentDots extends StatelessWidget {
+  const _CalendarAssessmentDots({
+    required this.count,
+    required this.selected,
+  });
+
+  final int count;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 3,
+      runSpacing: 3,
+      children: List<Widget>.generate(
+        count > 3 ? 3 : count,
+        (int index) => Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(
+            color: selected ? moodleWhite : moodlePurple,
+            shape: BoxShape.circle,
           ),
         ),
       ),

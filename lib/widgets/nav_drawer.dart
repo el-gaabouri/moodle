@@ -18,36 +18,46 @@ class NavDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: moodleDarkPurple,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CircleAvatar(
-                    radius: 26,
-                    backgroundColor: moodleWhite,
-                    child: Icon(Icons.person, size: 30, color: moodlePurple),
+            const SizedBox(
+              height: 176,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: moodleDarkPurple,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CircleAvatar(
+                        radius: 26,
+                        backgroundColor: moodleWhite,
+                        child: Icon(
+                          Icons.person,
+                          size: 30,
+                          color: moodlePurple,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Anass El Gaabouri',
+                        style: TextStyle(
+                          color: moodleWhite,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        'up2268566@myport.ac.uk',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Anass El Gaabouri',
-                    style: TextStyle(
-                      color: moodleWhite,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    'up2268566@myport.ac.uk',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
             ListTile(
