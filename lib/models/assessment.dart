@@ -5,6 +5,7 @@ class Assessment {
     required this.dueDate,
     required this.status,
     required this.section,
+    required this.assignmentDetails,
   });
 
   final String title;
@@ -12,6 +13,29 @@ class Assessment {
   final DateTime dueDate;
   final AssessmentStatus status;
   final AssessmentSection section;
+  final AssignmentSubmissionDetails assignmentDetails;
+}
+
+class AssignmentSubmissionDetails {
+  const AssignmentSubmissionDetails({
+    required this.title,
+    required this.statusHeading,
+    required this.rows,
+  });
+
+  final String title;
+  final String statusHeading;
+  final List<AssignmentSubmissionRow> rows;
+}
+
+class AssignmentSubmissionRow {
+  const AssignmentSubmissionRow({
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final String value;
 }
 
 enum AssessmentStatus {
@@ -41,6 +65,34 @@ enum AssessmentSection {
   past,
 }
 
+const AssignmentSubmissionDetails defaultAssignmentSubmissionDetails =
+    AssignmentSubmissionDetails(
+  title: 'Submit your assignment',
+  statusHeading: 'Submission status',
+  rows: [
+    AssignmentSubmissionRow(
+      label: 'Submission status',
+      value: 'No submissions have been made yet',
+    ),
+    AssignmentSubmissionRow(
+      label: 'Grading status',
+      value: 'Not marked',
+    ),
+    AssignmentSubmissionRow(
+      label: 'Time remaining',
+      value: '1 day 18 hours remaining',
+    ),
+    AssignmentSubmissionRow(
+      label: 'Last modified',
+      value: '-',
+    ),
+    AssignmentSubmissionRow(
+      label: 'Submission comments',
+      value: '',
+    ),
+  ],
+);
+
 final List<Assessment> assessments = [
   Assessment(
     title:
@@ -50,6 +102,7 @@ final List<Assessment> assessments = [
         'M30235 - Programming Applications and Programming Languages (2025/26)',
     status: AssessmentStatus.notYetSubmitted,
     section: AssessmentSection.upcoming,
+    assignmentDetails: defaultAssignmentSubmissionDetails,
   ),
   Assessment(
     title:
@@ -59,6 +112,7 @@ final List<Assessment> assessments = [
         'M30235 - Programming Applications and Programming Languages (2025/26)',
     status: AssessmentStatus.notAvailable,
     section: AssessmentSection.upcoming,
+    assignmentDetails: defaultAssignmentSubmissionDetails,
   ),
   Assessment(
     title: 'Referral/Deferral Functional Programming Assessment',
@@ -67,6 +121,7 @@ final List<Assessment> assessments = [
         'M21274-2025/26-SMJAN: Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
     status: AssessmentStatus.overdue,
     section: AssessmentSection.past,
+    assignmentDetails: defaultAssignmentSubmissionDetails,
   ),
   Assessment(
     title: 'Item 2 - Coursework - EC/late (Due Date: 28.5.2026 13:00pm)',
@@ -75,6 +130,7 @@ final List<Assessment> assessments = [
         'M30819-2025/26-SMYEAR: Software Engineering Theory and Practice (2025/26)',
     status: AssessmentStatus.submitted,
     section: AssessmentSection.past,
+    assignmentDetails: defaultAssignmentSubmissionDetails,
   ),
 ];
 

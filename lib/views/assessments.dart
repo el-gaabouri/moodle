@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moodle/models/assessment.dart';
+import 'package:moodle/views/assignment_view.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
@@ -177,7 +178,16 @@ class _AssessmentCard extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return AssignmentView(assessment: assessment);
+                      },
+                    ),
+                  );
+                },
                 child: const Text('Go to assignment'),
               ),
             ),
