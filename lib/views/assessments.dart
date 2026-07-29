@@ -53,28 +53,164 @@ class AssessmentsView extends StatelessWidget {
         ],
       ),
       drawer: const NavDrawer(),
-      body: Container(
-        color: moodleBg,
-        child: const SingleChildScrollView(
-          padding: EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'My Assessments',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: moodlePurple,
+      backgroundColor: moodleBg,
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'My Assessments',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: moodlePurple,
+              ),
+            ),
+            SizedBox(height: 24),
+            Text(
+              'Upcoming assessments',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: moodlePurple,
+              ),
+            ),
+            SizedBox(height: 12),
+            _AssessmentCard(
+              title: 'Mobile application prototype',
+              dueDate: '14 August 2026',
+              status: 'Not yet submitted',
+              statusColor: moodlePurple,
+              statusBackgroundColor: Color(0xFFF3EAF4),
+            ),
+            SizedBox(height: 12),
+            _AssessmentCard(
+              title: 'Database design report',
+              dueDate: '21 August 2026',
+              status: 'Not available',
+              statusColor: moodleTextMuted,
+              statusBackgroundColor: moodleGrayBg,
+            ),
+            SizedBox(height: 24),
+            Text(
+              'Past assessments',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: moodlePurple,
+              ),
+            ),
+            SizedBox(height: 12),
+            _AssessmentCard(
+              title: 'Web development coursework',
+              dueDate: '10 July 2026',
+              status: 'Overdue',
+              statusColor: Color(0xFFB42318),
+              statusBackgroundColor: Color(0xFFFDECEC),
+            ),
+            SizedBox(height: 12),
+            _AssessmentCard(
+              title: 'Research methods presentation',
+              dueDate: '26 June 2026',
+              status: 'Submitted',
+              statusColor: Color(0xFF067647),
+              statusBackgroundColor: Color(0xFFE7F6EC),
+            ),
+            SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AssessmentCard extends StatelessWidget {
+  const _AssessmentCard({
+    required this.title,
+    required this.dueDate,
+    required this.status,
+    required this.statusColor,
+    required this.statusBackgroundColor,
+  });
+
+  final String title;
+  final String dueDate;
+  final String status;
+  final Color statusColor;
+  final Color statusBackgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: moodleWhite,
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: moodleBorder),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: moodleTextDark,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  'Due date: $dueDate',
+                  style: const TextStyle(fontSize: 14, color: moodleTextMuted),
                 ),
-              ),
-              SizedBox(height: 24),
-              Text(
-                'This is the assessments page.',
-                style: TextStyle(fontSize: 16, color: moodleTextDark),
-              ),
-            ],
-          ),
+                _StatusBadge(
+                  label: status,
+                  textColor: statusColor,
+                  backgroundColor: statusBackgroundColor,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  const _StatusBadge({
+    required this.label,
+    required this.textColor,
+    required this.backgroundColor,
+  });
+
+  final String label;
+  final Color textColor;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          color: textColor,
         ),
       ),
     );
