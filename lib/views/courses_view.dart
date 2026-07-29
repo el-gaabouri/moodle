@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moodle/utils/asset_link_opener.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
+import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 import 'package:moodle/constants.dart';
 
@@ -65,6 +66,8 @@ class CoursesView extends StatelessWidget {
                 'My courses',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
+              const SizedBox(width: 24),
+              const AppBarNavLinks(),
             ],
           ),
         ),
@@ -284,9 +287,18 @@ class _CourseDetailsViewState extends State<_CourseDetailsView> {
         backgroundColor: moodleWhite,
         foregroundColor: moodleTextDark,
         elevation: 1,
-        title: const Text(
-          'Course details',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        title: const SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Text(
+                'Course details',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              SizedBox(width: 24),
+              AppBarNavLinks(),
+            ],
+          ),
         ),
       ),
       backgroundColor: moodleBg,

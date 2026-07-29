@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
+import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 import 'package:moodle/constants.dart';
 
@@ -31,6 +32,8 @@ class ProfileView extends StatelessWidget {
                 'My profile',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
+              const SizedBox(width: 24),
+              const AppBarNavLinks(),
             ],
           ),
         ),
