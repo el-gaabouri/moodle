@@ -376,7 +376,7 @@ class _CourseSectionContent extends StatelessWidget {
     }
 
     if (sectionIndex == 2) {
-      return const _ReadingListsSection();
+      return _ReadingListsSection(readingLists: course.details.readingLists);
     }
 
     return _CourseSection(course: course);
@@ -393,100 +393,107 @@ class _CourseSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'General',
-          style: TextStyle(
+        Text(
+          course.details.generalTitle,
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: moodleTextDark,
           ),
         ),
         const SizedBox(height: 20),
-        const _CourseResourceRow(
-          icon: Icons.chat_bubble_outline,
-          label: 'Announcements',
-        ),
-        const Divider(height: 32, thickness: 1, color: moodleBorder),
-        _CourseResourceRow(
-          icon: Icons.folder_open_outlined,
-          label: '${course.module} course materials',
-        ),
-        const Divider(height: 32, thickness: 1, color: moodleBorder),
-        const Text(
-          'Referral and Deferral Assessments',
-          style: TextStyle(
+        for (final CourseResource resource in course.details.resources) ...[
+          _CourseResourceRow(resource: resource),
+          const Divider(height: 32, thickness: 1, color: moodleBorder),
+        ],
+        Text(
+          course.details.referral.title,
+          style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: moodlePurple,
           ),
         ),
         const SizedBox(height: 12),
-        if (course.module == 'M30235')
-          _ProgrammingApplicationsReferralInfo(
-            onOpenBrief: () {
-              final bool opened = openAssetPath(
-                'images/flutter_ref_def_coursework.pdf',
-              );
+        _ReferralInfo(
+          referral: course.details.referral,
+          onOpenBrief: course.details.referral.briefAssetPath == null
+              ? null
+              : () {
+                  final String assetPath =
+                      course.details.referral.briefAssetPath!;
+                  final bool opened = openAssetPath(
+                    assetPath,
+                  );
 
-              if (!opened) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'The coursework brief is available at images/flutter_ref_def_coursework.pdf',
-                    ),
-                  ),
-                );
-              }
-            },
-          )
-        else
-          const Text(
-            'Assessment and support information for referral and deferral work will appear here.',
-            style: TextStyle(fontSize: 14, color: moodleTextDark),
-          ),
+                  if (!opened) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'The coursework brief is available at $assetPath',
+                        ),
+                      ),
+                    );
+                  }
+                },
+        ),
       ],
     );
   }
 }
 
-class _ProgrammingApplicationsReferralInfo extends StatelessWidget {
-  const _ProgrammingApplicationsReferralInfo({
-    required this.onOpenBrief,
+class _ReferralInfo extends StatelessWidget {
+  const _ReferralInfo({
+    required this.referral,
+    this.onOpenBrief,
   });
 
-  final VoidCallback onOpenBrief;
+  final ReferralDetails referral;
+  final VoidCallback? onOpenBrief;
 
   @override
   Widget build(BuildContext context) {
+    final bool hasBriefLink =
+        referral.briefIntro != null && referral.briefLinkLabel != null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            const Text(
-              'The coursework brief can be accessed via this link: ',
-              style: TextStyle(fontSize: 14, color: moodleTextDark),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(0, 0),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        if (hasBriefLink) ...[
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                referral.briefIntro!,
+                style: const TextStyle(fontSize: 14, color: moodleTextDark),
               ),
-              onPressed: onOpenBrief,
-              child: const Text('Flutter Referral and Deferral Coursework.pdf'),
+              TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: onOpenBrief,
+                child: Text(referral.briefLinkLabel!),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (referral.description.isNotEmpty)
+          Text(
+            referral.description,
+            style: const TextStyle(fontSize: 14, color: moodleTextDark),
+          ),
+        if (referral.instructions != null)
+          Text(
+            referral.instructions!,
+            style: const TextStyle(
+              fontSize: 14,
+              color: moodleTextDark,
+              height: 1.45,
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'Paste the link to the GitHub repository for your coursework in the provided text field of the submission page and click on Save changes. You are not submitting any files for this coursework. You should have forked this repository and built upon it as instructed in the brief. This way, the submitted link should be of this format (where YOUR-USERNAME is replaced with your GitHub username):\n\n'
-          'https://github.com/YOUR-USERNAME/moodle\n\n'
-          'Make sure the repository is public. Check to see if it opens in an incognito/private window (you should not get a 404 error).\n\n'
-          '\u26A0\uFE0F Do not make any commits after the deadline. I will label your submission as late if you do this.',
-          style: TextStyle(fontSize: 14, color: moodleTextDark, height: 1.45),
-        ),
+          ),
       ],
     );
   }
@@ -511,36 +518,39 @@ class _ModuleInfoSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        _InfoLine(label: 'Module', value: course.module),
-        const SizedBox(height: 16),
-        _InfoLine(label: 'Department', value: course.department),
-        const SizedBox(height: 16),
-        _InfoLine(label: 'Course name', value: course.name),
+        for (final CourseInfoItem item in course.details.moduleInfo) ...[
+          _InfoLine(label: item.label, value: item.value),
+          const SizedBox(height: 16),
+        ],
       ],
     );
   }
 }
 
 class _ReadingListsSection extends StatelessWidget {
-  const _ReadingListsSection();
+  const _ReadingListsSection({
+    required this.readingLists,
+  });
+
+  final ReadingListsDetails readingLists;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Reading Lists',
-          style: TextStyle(
+          readingLists.title,
+          style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: moodlePurple,
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
-          'Reading list links and course resources will appear here.',
-          style: TextStyle(fontSize: 14, color: moodleTextMuted),
+          readingLists.description,
+          style: const TextStyle(fontSize: 14, color: moodleTextMuted),
         ),
       ],
     );
@@ -549,27 +559,34 @@ class _ReadingListsSection extends StatelessWidget {
 
 class _CourseResourceRow extends StatelessWidget {
   const _CourseResourceRow({
-    required this.icon,
-    required this.label,
+    required this.resource,
   });
 
-  final IconData icon;
-  final String label;
+  final CourseResource resource;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: moodleBlue, size: 28),
+        Icon(_iconForResource(resource.type), color: moodleBlue, size: 28),
         const SizedBox(width: 16),
         Expanded(
           child: Text(
-            label,
+            resource.label,
             style: const TextStyle(fontSize: 16, color: moodleBlue),
           ),
         ),
       ],
     );
+  }
+
+  IconData _iconForResource(CourseResourceType type) {
+    switch (type) {
+      case CourseResourceType.announcements:
+        return Icons.chat_bubble_outline;
+      case CourseResourceType.folder:
+        return Icons.folder_open_outlined;
+    }
   }
 }
 
