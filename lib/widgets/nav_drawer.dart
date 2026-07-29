@@ -80,20 +80,6 @@ class NavDrawer extends StatelessWidget {
             ),
             ListTile(
               title: const Text(
-                'Dashboard',
-                style: TextStyle(color: moodleWhite, fontSize: 16),
-              ),
-              selected: isDashboard,
-              selectedTileColor: Colors.white24,
-              onTap: () {
-                Navigator.pop(context);
-                if (!isDashboard) {
-                  Navigator.pushReplacementNamed(context, '/');
-                }
-              },
-            ),
-            ListTile(
-              title: const Text(
                 'Calendar',
                 style: TextStyle(color: moodleWhite, fontSize: 16),
               ),
