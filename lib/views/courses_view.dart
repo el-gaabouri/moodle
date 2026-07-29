@@ -170,6 +170,7 @@ class _CoursesViewState extends State<CoursesView> {
                             : width >= 620
                                 ? 2
                                 : 1;
+                        final double cardHeight = width < 360 ? 300 : 292;
 
                         return GridView.builder(
                           shrinkWrap: true,
@@ -180,7 +181,7 @@ class _CoursesViewState extends State<CoursesView> {
                             crossAxisCount: crossAxisCount,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
-                            childAspectRatio: 1.12,
+                            mainAxisExtent: cardHeight,
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             final Course course = visibleCourses[index];
