@@ -6,11 +6,34 @@ import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 import 'package:moodle/constants.dart';
 
-class CoursesView extends StatelessWidget {
+class CoursesView extends StatefulWidget {
   const CoursesView({Key? key}) : super(key: key);
 
   @override
+  State<CoursesView> createState() => _CoursesViewState();
+}
+
+class _CoursesViewState extends State<CoursesView> {
+  String searchQuery = '';
+
+  List<Course> get filteredCourses {
+    final String query = searchQuery.trim().toLowerCase();
+
+    if (query.isEmpty) {
+      return courses;
+    }
+
+    return courses.where((Course course) {
+      return course.name.toLowerCase().contains(query) ||
+          course.module.toLowerCase().contains(query) ||
+          course.department.toLowerCase().contains(query);
+    }).toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final List<Course> visibleCourses = filteredCourses;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: moodleWhite,
@@ -91,9 +114,56 @@ class CoursesView extends StatelessWidget {
                     const SizedBox(height: 12),
                     const Divider(height: 1, thickness: 1, color: moodleBorder),
                     const SizedBox(height: 20),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search courses',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: searchQuery.isEmpty
+                            ? null
+                            : IconButton(
+                                tooltip: 'Clear search',
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  setState(() {
+                                    searchQuery = '';
+                                  });
+                                },
+                              ),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: moodleBorder),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: moodlePurple),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                      onChanged: (String value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
                     LayoutBuilder(
                       builder:
                           (BuildContext context, BoxConstraints constraints) {
+                        if (visibleCourses.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 24.0),
+                            child: Text(
+                              'No courses match your search.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: moodleTextMuted,
+                              ),
+                            ),
+                          );
+                        }
+
                         final double width = constraints.maxWidth;
                         final int crossAxisCount = width >= 900
                             ? 3
@@ -104,7 +174,7 @@ class CoursesView extends StatelessWidget {
                         return GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: courses.length,
+                          itemCount: visibleCourses.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: crossAxisCount,
@@ -113,7 +183,7 @@ class CoursesView extends StatelessWidget {
                             childAspectRatio: 1.12,
                           ),
                           itemBuilder: (BuildContext context, int index) {
-                            final Course course = courses[index];
+                            final Course course = visibleCourses[index];
 
                             return _CourseCard(
                               course: course,
