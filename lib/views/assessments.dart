@@ -203,7 +203,7 @@ class _AssessmentCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: OutlinedButton(
                 onPressed: () {},
-                child: const Text('View details'),
+                child: const Text('Go to assignment'),
               ),
             ),
           ],
