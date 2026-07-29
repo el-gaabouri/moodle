@@ -16,6 +16,11 @@ class AssignmentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AssignmentSubmissionDetails details = assessment.assignmentDetails;
+    final List<_SubmissionStatusRow> rows = _buildSubmissionStatusRows(
+      assessment,
+      details,
+      DateTime.now(),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -115,7 +120,7 @@ class AssignmentView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _SubmissionStatusTable(rows: details.rows),
+                    _SubmissionStatusTable(rows: rows),
                   ],
                 ),
               ),
@@ -132,7 +137,7 @@ class _SubmissionStatusTable extends StatelessWidget {
     required this.rows,
   });
 
-  final List<AssignmentSubmissionRow> rows;
+  final List<_SubmissionStatusRow> rows;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +147,7 @@ class _SubmissionStatusTable extends StatelessWidget {
         0: FlexColumnWidth(0.36),
         1: FlexColumnWidth(0.64),
       },
-      children: rows.map((AssignmentSubmissionRow row) {
+      children: rows.map((_SubmissionStatusRow row) {
         return TableRow(
           children: [
             _SubmissionTableCell(
@@ -156,6 +161,16 @@ class _SubmissionStatusTable extends StatelessWidget {
       }).toList(),
     );
   }
+}
+
+class _SubmissionStatusRow {
+  const _SubmissionStatusRow({
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final String value;
 }
 
 class _SubmissionTableCell extends StatelessWidget {
@@ -184,4 +199,79 @@ class _SubmissionTableCell extends StatelessWidget {
       ),
     );
   }
+}
+
+List<_SubmissionStatusRow> _buildSubmissionStatusRows(
+  Assessment assessment,
+  AssignmentSubmissionDetails details,
+  DateTime now,
+) {
+  return [
+    _SubmissionStatusRow(
+      label: 'Submission status',
+      value: assessment.status.label,
+    ),
+    _SubmissionStatusRow(
+      label: 'Grading status',
+      value: details.gradingStatus,
+    ),
+    _SubmissionStatusRow(
+      label: 'Time remaining',
+      value: _formatTimeRemaining(now, assessment.dueDate),
+    ),
+    _SubmissionStatusRow(
+      label: 'Last modified',
+      value: details.lastModified,
+    ),
+    _SubmissionStatusRow(
+      label: 'Submission comments',
+      value: details.submissionComments,
+    ),
+  ];
+}
+
+String _formatTimeRemaining(DateTime now, DateTime dueDate) {
+  final Duration difference = dueDate.difference(now);
+
+  if (difference.isNegative) {
+    final Duration overdueBy = now.difference(dueDate);
+
+    if (overdueBy.inMinutes == 0) {
+      return 'Less than 1 minute overdue';
+    }
+
+    return '${_formatDuration(overdueBy)} overdue';
+  }
+
+  if (difference.inMinutes == 0) {
+    return 'Less than 1 minute remaining';
+  }
+
+  return '${_formatDuration(difference)} remaining';
+}
+
+String _formatDuration(Duration duration) {
+  final int totalMinutes = duration.inMinutes.abs();
+  final int days = totalMinutes ~/ Duration.minutesPerDay;
+  final int hours = (totalMinutes % Duration.minutesPerDay) ~/ 60;
+  final int minutes = totalMinutes % 60;
+  final List<String> parts = [];
+
+  if (days > 0) {
+    parts.add('$days ${days == 1 ? 'day' : 'days'}');
+  }
+
+  if (hours > 0) {
+    parts.add('$hours ${hours == 1 ? 'hour' : 'hours'}');
+  }
+
+  if (days == 0 && minutes > 0) {
+    parts.add('$minutes ${minutes == 1 ? 'minute' : 'minutes'}');
+  }
+
+  if (parts.isEmpty) {
+    return 'Less than 1 minute';
+  }
+
+  return parts.join(' ');
 }

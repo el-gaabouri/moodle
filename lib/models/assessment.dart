@@ -20,22 +20,16 @@ class AssignmentSubmissionDetails {
   const AssignmentSubmissionDetails({
     required this.title,
     required this.statusHeading,
-    required this.rows,
+    required this.gradingStatus,
+    required this.lastModified,
+    required this.submissionComments,
   });
 
   final String title;
   final String statusHeading;
-  final List<AssignmentSubmissionRow> rows;
-}
-
-class AssignmentSubmissionRow {
-  const AssignmentSubmissionRow({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
+  final String gradingStatus;
+  final String lastModified;
+  final String submissionComments;
 }
 
 enum AssessmentStatus {
@@ -69,28 +63,9 @@ const AssignmentSubmissionDetails defaultAssignmentSubmissionDetails =
     AssignmentSubmissionDetails(
   title: 'Submit your assignment',
   statusHeading: 'Submission status',
-  rows: [
-    AssignmentSubmissionRow(
-      label: 'Submission status',
-      value: 'No submissions have been made yet',
-    ),
-    AssignmentSubmissionRow(
-      label: 'Grading status',
-      value: 'Not marked',
-    ),
-    AssignmentSubmissionRow(
-      label: 'Time remaining',
-      value: '1 day 18 hours remaining',
-    ),
-    AssignmentSubmissionRow(
-      label: 'Last modified',
-      value: '-',
-    ),
-    AssignmentSubmissionRow(
-      label: 'Submission comments',
-      value: '',
-    ),
-  ],
+  gradingStatus: 'Not marked',
+  lastModified: '-',
+  submissionComments: '',
 );
 
 final List<Assessment> assessments = [
