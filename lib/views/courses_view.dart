@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moodle/models/course.dart';
 import 'package:moodle/utils/asset_link_opener.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/app_bar_nav_links.dart';
@@ -10,39 +11,6 @@ class CoursesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const List<_Course> courses = [
-      _Course(
-        name: 'Programming Applications and Programming Languages',
-        module: 'M30235',
-        department: 'School of Computing',
-      ),
-      _Course(
-        name: 'Discrete Mathematics And Functional Programming',
-        module: 'M21274',
-        department: 'School of Mathematics and Physics',
-      ),
-      _Course(
-        name: 'Software Engineering Theory and Practice',
-        module: 'M30819',
-        department: 'School of Computing',
-      ),
-      _Course(
-        name: 'Database Systems',
-        module: 'M30234',
-        department: 'School of Computing',
-      ),
-      _Course(
-        name: 'Web Foundations',
-        module: 'M30229',
-        department: 'School of Computing',
-      ),
-      _Course(
-        name: 'Computer Networks',
-        module: 'M30231',
-        department: 'School of Computing',
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: moodleWhite,
@@ -145,7 +113,7 @@ class CoursesView extends StatelessWidget {
                             childAspectRatio: 1.12,
                           ),
                           itemBuilder: (BuildContext context, int index) {
-                            final _Course course = courses[index];
+                            final Course course = courses[index];
 
                             return _CourseCard(
                               course: course,
@@ -175,25 +143,13 @@ class CoursesView extends StatelessWidget {
   }
 }
 
-class _Course {
-  const _Course({
-    required this.name,
-    required this.module,
-    required this.department,
-  });
-
-  final String name;
-  final String module;
-  final String department;
-}
-
 class _CourseCard extends StatelessWidget {
   const _CourseCard({
     required this.course,
     required this.onTap,
   });
 
-  final _Course course;
+  final Course course;
   final VoidCallback onTap;
 
   @override
@@ -260,7 +216,7 @@ class _CourseCard extends StatelessWidget {
 class _CourseDetailsView extends StatefulWidget {
   const _CourseDetailsView({required this.course});
 
-  final _Course course;
+  final Course course;
 
   @override
   State<_CourseDetailsView> createState() => _CourseDetailsViewState();
@@ -411,7 +367,7 @@ class _CourseSectionContent extends StatelessWidget {
   });
 
   final int sectionIndex;
-  final _Course course;
+  final Course course;
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +386,7 @@ class _CourseSectionContent extends StatelessWidget {
 class _CourseSection extends StatelessWidget {
   const _CourseSection({required this.course});
 
-  final _Course course;
+  final Course course;
 
   @override
   Widget build(BuildContext context) {
@@ -539,7 +495,7 @@ class _ProgrammingApplicationsReferralInfo extends StatelessWidget {
 class _ModuleInfoSection extends StatelessWidget {
   const _ModuleInfoSection({required this.course});
 
-  final _Course course;
+  final Course course;
 
   @override
   Widget build(BuildContext context) {
