@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moodle/views/calendar.dart' show CalendarCard;
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 import 'package:moodle/constants.dart';
@@ -53,85 +54,140 @@ class DashboardView extends StatelessWidget {
         ],
       ),
       drawer: const NavDrawer(),
-      body: Container(
-        color: moodleBg,
-        child: const SingleChildScrollView(
-          padding: EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+      backgroundColor: moodleBg,
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Dashboard',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: moodlePurple,
+              ),
+            ),
+            SizedBox(height: 24),
+            _DashboardCard(
+              title: 'Timeline',
+              child: Column(
+                children: [
+                  _TimelineRow(
+                    date: '30 July 2026',
+                    assessment: 'Ref/Def - Item 2 M30235 - Computer Based Exam',
+                  ),
+                  Divider(height: 24, thickness: 1, color: moodleBorder),
+                  _TimelineRow(
+                    date: '29 July 2026',
+                    assessment:
+                        'Item 1 (Flutter) - Referral and Deferral Coursework',
+                  ),
+                  Divider(height: 24, thickness: 1, color: moodleBorder),
+                  _TimelineRow(
+                    date: '10 July 2026',
+                    assessment:
+                        'Referral/Deferral Functional Programming Assessment',
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 24),
+            _DashboardCard(
+              title: 'Latest announcements',
+              child: Text(
+                '(No announcements have been posted yet.)',
+                style: TextStyle(fontSize: 14, color: moodleTextMuted),
+              ),
+            ),
+            SizedBox(height: 24),
+            _DashboardCard(
+              child: CalendarCard(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DashboardCard extends StatelessWidget {
+  const _DashboardCard({
+    this.title,
+    required this.child,
+  });
+
+  final String? title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: moodleWhite,
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: moodleBorder),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (title != null) ...[
               Text(
-                'Dashboard',
-                style: TextStyle(
-                  fontSize: 28,
+                title!,
+                style: const TextStyle(
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: moodlePurple,
                 ),
               ),
-              SizedBox(height: 24),
-              Card(
-                color: moodleWhite,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: moodleBorder),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Feature Placeholder 1',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: moodlePurple,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        'This is a placeholder block.',
-                        style: TextStyle(fontSize: 14, color: moodleTextMuted),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 24),
-              Card(
-                color: moodleWhite,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: moodleBorder),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Feature Placeholder 2',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: moodlePurple,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        'This is a placeholder block.',
-                        style: TextStyle(fontSize: 14, color: moodleTextMuted),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const SizedBox(height: 12),
+              const Divider(height: 1, thickness: 1, color: moodleBorder),
+              const SizedBox(height: 20),
             ],
-          ),
+            child,
+          ],
         ),
       ),
+    );
+  }
+}
+
+class _TimelineRow extends StatelessWidget {
+  const _TimelineRow({
+    required this.date,
+    required this.assessment,
+  });
+
+  final String date;
+  final String assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 112,
+          child: Text(
+            date,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: moodleTextDark,
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            assessment,
+            style: const TextStyle(fontSize: 14, color: moodleTextMuted),
+          ),
+        ),
+      ],
     );
   }
 }
