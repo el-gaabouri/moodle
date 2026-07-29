@@ -93,7 +93,7 @@ class CoursesView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Course overview',
+              'My courses',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -101,44 +101,73 @@ class CoursesView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final double width = constraints.maxWidth;
-                final int crossAxisCount = width >= 900
-                    ? 3
-                    : width >= 620
-                        ? 2
-                        : 1;
+            Card(
+              color: moodleWhite,
+              elevation: 0,
+              shape: const RoundedRectangleBorder(
+                side: BorderSide(color: moodleBorder),
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Course overview',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: moodlePurple,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1, thickness: 1, color: moodleBorder),
+                    const SizedBox(height: 20),
+                    LayoutBuilder(
+                      builder:
+                          (BuildContext context, BoxConstraints constraints) {
+                        final double width = constraints.maxWidth;
+                        final int crossAxisCount = width >= 900
+                            ? 3
+                            : width >= 620
+                                ? 2
+                                : 1;
 
-                return GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: courses.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 1,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    final _Course course = courses[index];
-
-                    return _CourseCard(
-                      course: course,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) {
-                              return _CourseDetailsView(course: course);
-                            },
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: courses.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 1,
                           ),
+                          itemBuilder: (BuildContext context, int index) {
+                            final _Course course = courses[index];
+
+                            return _CourseCard(
+                              course: course,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute<void>(
+                                    builder: (BuildContext context) {
+                                      return _CourseDetailsView(course: course);
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                );
-              },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -170,7 +199,7 @@ class _CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Material(
       clipBehavior: Clip.antiAlias,
       color: moodleWhite,
       elevation: 0,
@@ -181,16 +210,26 @@ class _CourseCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.asset(
+                  'images/course.png',
+                  width: double.infinity,
+                  height: 86,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 12),
               Text(
                 course.name,
-                maxLines: 3,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: moodlePurple,
                 ),
