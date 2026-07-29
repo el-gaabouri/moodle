@@ -78,18 +78,22 @@ class AssessmentsView extends StatelessWidget {
             ),
             SizedBox(height: 12),
             _AssessmentCard(
-              title: 'Item 1 (Flutter) - Referral and Deferral Coursework. Deadline: 29/07/2026 13:00pm (with the 48 hour extension: 31/07/2026 13:00pm)',
+              title:
+                  'Item 1 (Flutter) - Referral and Deferral Coursework. Deadline: 29/07/2026 13:00pm (with the 48 hour extension: 31/07/2026 13:00pm)',
               dueDate: '29 July 2026',
-              moduleName: 'M30235 - Programming Applications and Programming Languages (2025/26)',
+              moduleName:
+                  'M30235 - Programming Applications and Programming Languages (2025/26)',
               status: 'Not yet submitted',
               statusColor: moodlePurple,
               statusBackgroundColor: Color(0xFFF3EAF4),
             ),
             SizedBox(height: 12),
             _AssessmentCard(
-              title: 'Ref/Def - Item 2 M30235 - Computer Based Exam (30 July 2026, 10:00 AM)',
+              title:
+                  'Ref/Def - Item 2 M30235 - Computer Based Exam (30 July 2026, 10:00 AM)',
               dueDate: '30 July 2026',
-              moduleName: 'M30235 - Programming Applications and Programming Languages (2025/26)',
+              moduleName:
+                  'M30235 - Programming Applications and Programming Languages (2025/26)',
               status: 'Not available',
               statusColor: moodleTextMuted,
               statusBackgroundColor: moodleGrayBg,
@@ -107,16 +111,19 @@ class AssessmentsView extends StatelessWidget {
             _AssessmentCard(
               title: 'Referral/Deferral Functional Programming Assessment',
               dueDate: '10 July 2026',
-              moduleName: 'M21274-2025/26-SMJAN: Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
+              moduleName:
+                  'M21274-2025/26-SMJAN: Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
               status: 'Overdue',
               statusColor: Color(0xFFB42318),
               statusBackgroundColor: Color(0xFFFDECEC),
             ),
             SizedBox(height: 12),
             _AssessmentCard(
-              title: 'Item 2 - Coursework - EC/late (Due Date: 28.5.2026 13:00pm)',
+              title:
+                  'Item 2 - Coursework - EC/late (Due Date: 28.5.2026 13:00pm)',
               dueDate: '26 June 2026',
-              moduleName: 'M30819-2025/26-SMYEAR: Software Engineering Theory and Practice (2025/26)',
+              moduleName:
+                  'M30819-2025/26-SMYEAR: Software Engineering Theory and Practice (2025/26)',
               status: 'Submitted',
               statusColor: Color(0xFF067647),
               statusBackgroundColor: Color(0xFFE7F6EC),
@@ -160,30 +167,44 @@ class _AssessmentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: moodleTextDark,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              crossAxisAlignment: WrapCrossAlignment.center,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Due date: $dueDate',
-                  style: const TextStyle(fontSize: 14, color: moodleTextMuted),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: moodleTextDark,
+                    ),
+                  ),
                 ),
+                const SizedBox(width: 12),
                 _StatusBadge(
                   label: status,
                   textColor: statusColor,
                   backgroundColor: statusBackgroundColor,
                 ),
               ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              moduleName,
+              style: const TextStyle(fontSize: 14, color: moodleTextMuted),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Due date: $dueDate',
+              style: const TextStyle(fontSize: 14, color: moodleTextMuted),
+            ),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: OutlinedButton(
+                onPressed: () {},
+                child: const Text('View details'),
+              ),
             ),
           ],
         ),
