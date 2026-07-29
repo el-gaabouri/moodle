@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moodle/models/assessment.dart';
+import 'package:moodle/views/assignment_view.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/app_bar_nav_links.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
@@ -97,6 +98,7 @@ class _CalendarCardState extends State<CalendarCard> {
   late final DateTime today;
   late DateTime visibleMonth;
   DateTime? selectedDate;
+  _DeadlineFilter deadlineFilter = _DeadlineFilter.upcoming;
 
   static const List<String> weekdayLabels = [
     'Mon',
@@ -133,12 +135,50 @@ class _CalendarCardState extends State<CalendarCard> {
     });
   }
 
+  Future<void> pickFilterDate() async {
+    final DateTime now = DateTime.now();
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? now,
+      firstDate: DateTime(now.year - 2),
+      lastDate: DateTime(now.year + 3, 12, 31),
+    );
+
+    if (pickedDate == null) {
+      return;
+    }
+
+    setState(() {
+      visibleMonth = DateTime(pickedDate.year, pickedDate.month);
+      selectedDate = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+      );
+      deadlineFilter = _DeadlineFilter.selectedDate;
+    });
+  }
+
+  void clearSelectedDate() {
+    setState(() {
+      selectedDate = null;
+      deadlineFilter = _DeadlineFilter.upcoming;
+    });
+  }
+
+  void updateDeadlineFilter(_DeadlineFilter filter) {
+    setState(() {
+      deadlineFilter = filter;
+    });
+  }
+
   void selectDay(int day) {
     final DateTime date = DateTime(visibleMonth.year, visibleMonth.month, day);
     final List<Assessment> dayAssessments = assessmentsForDate(date);
 
     setState(() {
       selectedDate = date;
+      deadlineFilter = _DeadlineFilter.selectedDate;
     });
 
     showDialog<void>(
@@ -164,6 +204,10 @@ class _CalendarCardState extends State<CalendarCard> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Assessment> visibleDeadlines = deadlineAssessmentsForFilter(
+      deadlineFilter,
+      DateTime.now(),
+    );
     final DateTime firstDayOfMonth = DateTime(
       visibleMonth.year,
       visibleMonth.month,
@@ -290,8 +334,44 @@ class _CalendarCardState extends State<CalendarCard> {
             );
           },
         ),
+        const SizedBox(height: 20),
+        _CalendarDeadlinePanel(
+          selectedDate: selectedDate,
+          filter: deadlineFilter,
+          deadlines: visibleDeadlines,
+          onFilterChanged: updateDeadlineFilter,
+          onPickDate: pickFilterDate,
+          onClearSelectedDate: selectedDate == null ? null : clearSelectedDate,
+        ),
       ],
     );
+  }
+
+  List<Assessment> deadlineAssessmentsForFilter(
+    _DeadlineFilter filter,
+    DateTime now,
+  ) {
+    if (filter == _DeadlineFilter.selectedDate && selectedDate != null) {
+      return _sortAssessmentsByDueDate(assessmentsForDate(selectedDate!));
+    }
+
+    if (filter == _DeadlineFilter.allDeadlines) {
+      return _sortAssessmentsByDueDate(assessments);
+    }
+
+    final DateTime startOfToday = DateTime(now.year, now.month, now.day);
+
+    return _sortAssessmentsByDueDate(
+      assessments.where((Assessment assessment) {
+        return !assessment.dueDate.isBefore(startOfToday) &&
+            assessment.status != AssessmentStatus.submitted;
+      }).toList(),
+    );
+  }
+
+  List<Assessment> _sortAssessmentsByDueDate(List<Assessment> source) {
+    return List<Assessment>.of(source)
+      ..sort((Assessment a, Assessment b) => a.dueDate.compareTo(b.dueDate));
   }
 
   String monthName(int month) {
@@ -324,6 +404,12 @@ class _CalendarCardState extends State<CalendarCard> {
         return '';
     }
   }
+}
+
+enum _DeadlineFilter {
+  upcoming,
+  selectedDate,
+  allDeadlines,
 }
 
 class _CalendarDayDialogContent extends StatelessWidget {
@@ -402,6 +488,204 @@ class _CalendarAssessmentSummary extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CalendarDeadlinePanel extends StatelessWidget {
+  const _CalendarDeadlinePanel({
+    required this.selectedDate,
+    required this.filter,
+    required this.deadlines,
+    required this.onFilterChanged,
+    required this.onPickDate,
+    required this.onClearSelectedDate,
+  });
+
+  final DateTime? selectedDate;
+  final _DeadlineFilter filter;
+  final List<Assessment> deadlines;
+  final ValueChanged<_DeadlineFilter> onFilterChanged;
+  final VoidCallback onPickDate;
+  final VoidCallback? onClearSelectedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final String title = _deadlineListTitle(filter, selectedDate);
+    final String emptyText = filter == _DeadlineFilter.selectedDate
+        ? 'No deadlines for this date.'
+        : 'No deadlines to show.';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(height: 1, thickness: 1, color: moodleBorder),
+        const SizedBox(height: 20),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            SegmentedButton<_DeadlineFilter>(
+              segments: [
+                const ButtonSegment<_DeadlineFilter>(
+                  value: _DeadlineFilter.upcoming,
+                  label: Text('Upcoming'),
+                  icon: Icon(Icons.schedule),
+                ),
+                if (selectedDate != null)
+                  const ButtonSegment<_DeadlineFilter>(
+                    value: _DeadlineFilter.selectedDate,
+                    label: Text('Selected day'),
+                    icon: Icon(Icons.event_available),
+                  ),
+                const ButtonSegment<_DeadlineFilter>(
+                  value: _DeadlineFilter.allDeadlines,
+                  label: Text('All deadlines'),
+                  icon: Icon(Icons.list_alt),
+                ),
+              ],
+              selected: <_DeadlineFilter>{filter},
+              onSelectionChanged: (Set<_DeadlineFilter> selection) {
+                if (selection.isEmpty) {
+                  return;
+                }
+
+                onFilterChanged(selection.first);
+              },
+            ),
+            OutlinedButton.icon(
+              onPressed: onPickDate,
+              icon: const Icon(Icons.calendar_month),
+              label: const Text('Pick date'),
+            ),
+            if (onClearSelectedDate != null)
+              TextButton.icon(
+                onPressed: onClearSelectedDate,
+                icon: const Icon(Icons.close),
+                label: const Text('Clear date'),
+              ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: moodlePurple,
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (deadlines.isEmpty)
+          Text(
+            emptyText,
+            style: const TextStyle(fontSize: 14, color: moodleTextMuted),
+          )
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: deadlines.length,
+            separatorBuilder: (BuildContext context, int index) {
+              return const SizedBox(height: 10);
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return _CalendarDeadlineItem(assessment: deadlines[index]);
+            },
+          ),
+      ],
+    );
+  }
+
+  String _deadlineListTitle(_DeadlineFilter filter, DateTime? selectedDate) {
+    if (filter == _DeadlineFilter.selectedDate && selectedDate != null) {
+      return 'Deadlines on ${formatAssessmentDate(selectedDate)}';
+    }
+
+    if (filter == _DeadlineFilter.allDeadlines) {
+      return 'All deadlines';
+    }
+
+    return 'Upcoming deadlines';
+  }
+}
+
+class _CalendarDeadlineItem extends StatelessWidget {
+  const _CalendarDeadlineItem({
+    required this.assessment,
+  });
+
+  final Assessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: moodleSurface,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: moodleBorder),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return AssignmentView(assessment: assessment);
+              },
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(14.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      assessment.title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: moodleTextDark,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _CalendarStatusBadge(status: assessment.status),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                assessment.moduleName,
+                style: const TextStyle(fontSize: 13, color: moodleTextMuted),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Due ${_formatDeadlineDateTime(assessment.dueDate)}',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: moodlePurple,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _formatDeadlineDateTime(DateTime date) {
+  final int hour = date.hour % 12 == 0 ? 12 : date.hour % 12;
+  final String minute = date.minute.toString().padLeft(2, '0');
+  final String period = date.hour >= 12 ? 'PM' : 'AM';
+
+  return '${formatAssessmentDate(date)} at $hour:$minute $period';
 }
 
 class _CalendarDayCell extends StatelessWidget {
