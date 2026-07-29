@@ -143,7 +143,7 @@ class CoursesView extends StatelessWidget {
                             crossAxisCount: crossAxisCount,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
-                            childAspectRatio: 1,
+                            childAspectRatio: 1.12,
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             final _Course course = courses[index];
@@ -219,11 +219,11 @@ class _CourseCard extends StatelessWidget {
                 child: Image.asset(
                   'images/course.png',
                   width: double.infinity,
-                  height: 86,
+                  height: 120,
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Text(
                 course.name,
                 maxLines: 2,
@@ -234,7 +234,7 @@ class _CourseCard extends StatelessWidget {
                   color: moodlePurple,
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 10),
               Text(
                 course.module,
                 style: const TextStyle(
