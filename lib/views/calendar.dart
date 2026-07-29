@@ -89,13 +89,54 @@ class CalendarCard extends StatefulWidget {
   const CalendarCard({Key? key}) : super(key: key);
 
   @override
-  State<CalendarCard> createState() => CalendarCardState();
+  State<CalendarCard> createState() => _CalendarCardState();
 }
 
-class CalendarCardState extends State<CalendarCard> {
+class _CalendarCardState extends State<CalendarCard> {
   late final DateTime today;
   late DateTime visibleMonth;
   DateTime? selectedDate;
+
+  static final List<_CalendarAssessment> assessments = [
+    _CalendarAssessment(
+      title:
+          'Item 1 (Flutter) - Referral and Deferral Coursework. Deadline: 29/07/2026 13:00pm (with the 48 hour extension: 31/07/2026 13:00pm)',
+      moduleName:
+          'M30235 - Programming Applications and Programming Languages (2025/26)',
+      status: 'Not yet submitted',
+      date: DateTime(2026, 7, 29),
+      statusColor: moodlePurple,
+      statusBackgroundColor: const Color(0xFFF3EAF4),
+    ),
+    _CalendarAssessment(
+      title:
+          'Ref/Def - Item 2 M30235 - Computer Based Exam (30 July 2026, 10:00 AM)',
+      moduleName:
+          'M30235 - Programming Applications and Programming Languages (2025/26)',
+      status: 'Not available',
+      date: DateTime(2026, 7, 30),
+      statusColor: moodleTextMuted,
+      statusBackgroundColor: moodleGrayBg,
+    ),
+    _CalendarAssessment(
+      title: 'Referral/Deferral Functional Programming Assessment',
+      moduleName:
+          'M21274-2025/26-SMJAN: Discrete Mathematics And Functional Programming (MATHFUN) (2025/26)',
+      status: 'Overdue',
+      date: DateTime(2026, 7, 10),
+      statusColor: const Color(0xFFB42318),
+      statusBackgroundColor: const Color(0xFFFDECEC),
+    ),
+    _CalendarAssessment(
+      title: 'Item 2 - Coursework - EC/late (Due Date: 28.5.2026 13:00pm)',
+      moduleName:
+          'M30819-2025/26-SMYEAR: Software Engineering Theory and Practice (2025/26)',
+      status: 'Submitted',
+      date: DateTime(2026, 6, 26),
+      statusColor: const Color(0xFF067647),
+      statusBackgroundColor: const Color(0xFFE7F6EC),
+    ),
+  ];
 
   static const List<String> weekdayLabels = [
     'Mon',
@@ -134,6 +175,7 @@ class CalendarCardState extends State<CalendarCard> {
 
   void selectDay(int day) {
     final DateTime date = DateTime(visibleMonth.year, visibleMonth.month, day);
+    final List<_CalendarAssessment> dayAssessments = assessmentsForDate(date);
 
     setState(() {
       selectedDate = date;
@@ -143,8 +185,10 @@ class CalendarCardState extends State<CalendarCard> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Selected day'),
-          content: Text('${monthName(date.month)} ${date.day}, ${date.year}'),
+          title: Text('${monthName(date.month)} ${date.day}, ${date.year}'),
+          content: _CalendarDayDialogContent(
+            assessments: dayAssessments,
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -156,6 +200,14 @@ class CalendarCardState extends State<CalendarCard> {
         );
       },
     );
+  }
+
+  List<_CalendarAssessment> assessmentsForDate(DateTime date) {
+    return assessments.where((assessment) {
+      return assessment.date.year == date.year &&
+          assessment.date.month == date.month &&
+          assessment.date.day == date.day;
+    }).toList();
   }
 
   @override
@@ -266,11 +318,16 @@ class CalendarCardState extends State<CalendarCard> {
                     day == selectedDate!.day &&
                     visibleMonth.month == selectedDate!.month &&
                     visibleMonth.year == selectedDate!.year;
+                final List<_CalendarAssessment> dayAssessments =
+                    assessmentsForDate(
+                  DateTime(visibleMonth.year, visibleMonth.month, day),
+                );
 
-                return CalendarDayCell(
+                return _CalendarDayCell(
                   day: day,
                   isToday: isToday,
                   isSelected: isSelected,
+                  assessments: dayAssessments,
                   onTap: () {
                     selectDay(day);
                   },
@@ -315,18 +372,118 @@ class CalendarCardState extends State<CalendarCard> {
   }
 }
 
-class CalendarDayCell extends StatelessWidget {
-  const CalendarDayCell({
+class _CalendarAssessment {
+  const _CalendarAssessment({
+    required this.title,
+    required this.moduleName,
+    required this.status,
+    required this.date,
+    required this.statusColor,
+    required this.statusBackgroundColor,
+  });
+
+  final String title;
+  final String moduleName;
+  final String status;
+  final DateTime date;
+  final Color statusColor;
+  final Color statusBackgroundColor;
+}
+
+class _CalendarDayDialogContent extends StatelessWidget {
+  const _CalendarDayDialogContent({
+    required this.assessments,
+  });
+
+  final List<_CalendarAssessment> assessments;
+
+  @override
+  Widget build(BuildContext context) {
+    if (assessments.isEmpty) {
+      return const Text(
+        'No assessments on this date.',
+        style: TextStyle(fontSize: 14, color: moodleTextMuted),
+      );
+    }
+
+    return SizedBox(
+      width: 420,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: assessments
+            .map(
+              (assessment) => Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: _CalendarAssessmentSummary(
+                  assessment: assessment,
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class _CalendarAssessmentSummary extends StatelessWidget {
+  const _CalendarAssessmentSummary({
+    required this.assessment,
+  });
+
+  final _CalendarAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: moodleBorder),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            assessment.title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: moodleTextDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            assessment.moduleName,
+            style: const TextStyle(fontSize: 13, color: moodleTextMuted),
+          ),
+          const SizedBox(height: 10),
+          _CalendarStatusBadge(
+            label: assessment.status,
+            textColor: assessment.statusColor,
+            backgroundColor: assessment.statusBackgroundColor,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CalendarDayCell extends StatelessWidget {
+  const _CalendarDayCell({
     Key? key,
     required this.day,
     required this.isToday,
     required this.isSelected,
+    required this.assessments,
     required this.onTap,
   }) : super(key: key);
 
   final int day;
   final bool isToday;
   final bool isSelected;
+  final List<_CalendarAssessment> assessments;
   final VoidCallback onTap;
 
   @override
@@ -350,21 +507,117 @@ class CalendarDayCell extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         onTap: onTap,
         child: Container(
-          alignment: Alignment.center,
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: backgroundColor,
             border: Border.all(color: borderColor),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Text(
-            '$day',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight:
-                  isSelected || isToday ? FontWeight.bold : FontWeight.normal,
-              color: textColor,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$day',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isSelected || isToday
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: textColor,
+                ),
+              ),
+              if (assessments.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final _CalendarAssessment assessment
+                          in assessments.take(2))
+                        _CalendarAssessmentChip(
+                          assessment: assessment,
+                          selected: isSelected,
+                        ),
+                      if (assessments.length > 2)
+                        Text(
+                          '+${assessments.length - 2} more',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: isSelected ? moodleWhite : moodleTextMuted,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarAssessmentChip extends StatelessWidget {
+  const _CalendarAssessmentChip({
+    required this.assessment,
+    required this.selected,
+  });
+
+  final _CalendarAssessment assessment;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+      decoration: BoxDecoration(
+        color: selected
+            ? const Color(0x2EFFFFFF)
+            : assessment.statusBackgroundColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        assessment.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: selected ? moodleWhite : assessment.statusColor,
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarStatusBadge extends StatelessWidget {
+  const _CalendarStatusBadge({
+    required this.label,
+    required this.textColor,
+    required this.backgroundColor,
+  });
+
+  final String label;
+  final Color textColor;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          color: textColor,
         ),
       ),
     );
