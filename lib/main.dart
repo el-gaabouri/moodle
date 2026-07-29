@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:moodle/models/navigation_args.dart';
+import 'package:moodle/views/assignment_view.dart';
+import 'package:moodle/views/course_details_view.dart';
 import 'package:moodle/views/dashboard_view.dart';
 import 'package:moodle/views/courses_view.dart';
 import 'package:moodle/views/assessments.dart';
@@ -35,6 +38,38 @@ class MoodleApp extends StatelessWidget {
         '/calendar': (context) => const CalendarView(),
         '/profile': (context) => const ProfileView(),
         '/login': (context) => const LoginView(),
+      },
+      onGenerateRoute: (RouteSettings settings) {
+        if (settings.name == '/course-details') {
+          final Object? arguments = settings.arguments;
+
+          if (arguments is CourseDetailsArguments) {
+            return MaterialPageRoute<void>(
+              settings: settings,
+              builder: (BuildContext context) {
+                return CourseDetailsView(
+                  course: arguments.course,
+                  initialSection: arguments.initialSection,
+                );
+              },
+            );
+          }
+        }
+
+        if (settings.name == '/assignment') {
+          final Object? arguments = settings.arguments;
+
+          if (arguments is AssignmentArguments) {
+            return MaterialPageRoute<void>(
+              settings: settings,
+              builder: (BuildContext context) {
+                return AssignmentView(assessment: arguments.assessment);
+              },
+            );
+          }
+        }
+
+        return null;
       },
       debugShowCheckedModeBanner: false,
     );

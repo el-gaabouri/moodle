@@ -3,6 +3,7 @@ import 'package:moodle/constants.dart';
 import 'package:moodle/models/assessment.dart';
 import 'package:moodle/widgets/account_menu_button.dart';
 import 'package:moodle/widgets/app_bar_nav_links.dart';
+import 'package:moodle/widgets/app_bar_search_button.dart';
 import 'package:moodle/widgets/nav_drawer.dart';
 
 class AssignmentView extends StatelessWidget {
@@ -46,10 +47,7 @@ class AssignmentView extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search_outlined),
-            onPressed: () {},
-          ),
+          const AppBarSearchButton(),
           IconButton(
             icon: const Icon(Icons.notifications_none_outlined),
             onPressed: () {},
