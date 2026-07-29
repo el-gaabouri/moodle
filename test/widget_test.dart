@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moodle/main.dart';
 
 void main() {
-  testWidgets('App renders dashboard and courses screen correctly',
+  testWidgets('App logs in and renders dashboard and courses screen correctly',
       (WidgetTester tester) async {
     // Set desktop screen size
     tester.view.physicalSize = const Size(1200, 800);
@@ -16,6 +16,13 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MoodleApp());
 
+    // Verify that the app starts on the login page.
+    expect(find.text('This is login page to moodle'), findsOneWidget);
+
+    // Log in to navigate to the dashboard.
+    await tester.tap(find.widgetWithText(FilledButton, 'Login'));
+    await tester.pumpAndSettle();
+
     // Verify that Dashboard title exists.
     expect(find.text('Dashboard'), findsNWidgets(2));
 
@@ -24,10 +31,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // Navigate to My Courses in drawer
-    await tester.tap(find.text('My courses'));
+    await tester.tap(find.widgetWithText(ListTile, 'My courses'));
     await tester.pumpAndSettle();
 
-    // Verify Courses page contains title
-    expect(find.text('This is the courses overview page.'), findsOneWidget);
+    // Verify Courses page contains course overview card title.
+    expect(find.text('Course overview'), findsOneWidget);
   });
 }
